@@ -1,5 +1,5 @@
 # Stable Neural Stochastic Differential Equations (Neural SDEs)
-This repository contains the PyTorch implementation for the paper [Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data](https://openreview.net/forum?id=4VIgNuQ1pY). Spotlight presentation (Notable Top 5%)
+This repository contains the PyTorch implementation for the paper [Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data](https://openreview.net/forum?id=4VIgNuQ1pY). Spotlight presentation (Notable Top 5%). 
 
 > Oh, Y., Lim, D., & Kim, S. (2024). Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data. arXiv preprint arXiv:2402.14989.
 
