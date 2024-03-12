@@ -5,6 +5,8 @@ This repository contains the PyTorch implementation for the paper [Stable Neural
 
 > Oh, Y., Lim, D., & Kim, S. (2024, May). Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data. In The Twelfth International Conference on Learning Representations.
 
+---
+
 ## **Code architecture**
 The code for each experiment is meticulously organized into separate folders, aligned with the original references used for implementation. 
 
@@ -19,7 +21,7 @@ The code for each experiment is meticulously organized into separate folders, al
 
 [3] Jhin, S. Y., Shin, H., Hong, S., Jo, M., Park, S., Park, N., ... & Jeon, S. (2021, December). Attentive Neural Controlled Differential Equations for Time-series Classification and Forecasting. In 2021 IEEE International Conference on Data Mining (ICDM) (pp. 250-259). IEEE Computer Society.
 
----
+--
 
 For example, a critical component of the code is the `diffusion_model` class found in `NSDE/benchmark_classification/models_sde/neuralsde.py`. This class plays a central role in modeling the Neural SDEs proposed in the study.
 
@@ -36,6 +38,8 @@ For example, a critical component of the code is the `diffusion_model` class fou
 - It is acknowledged that the current version of the code is somewhat messy. This candid admission suggests ongoing development and refinement of the codebase.
 - Despite its current state, the code provides valuable insights into the code-level details of the implementation, which can be beneficial for researchers and practitioners interested in understanding or replicating the study.
 - Future efforts may focus on cleaning and documenting the code further to enhance its accessibility and usability for the wider research community.
+
+---
 
 ## Reference
 ```
