@@ -91,20 +91,23 @@ class NeuralSDE(torch.nn.Module):
     
 
 class NeuralSDE_forecasting(torch.nn.Module):
-    def __init__(self, func, input_channels, hidden_channels, output_channels, initial=True):
+    def __init__(self, func, input_channels, output_time, hidden_channels, output_channels, initial=True):
         super().__init__()
         self.func = func
         self.initial = initial
+        self.output_time = output_time
         self.initial_network = torch.nn.Linear(input_channels, hidden_channels)
         
         # self.linear = torch.nn.Linear(hidden_channels, output_channels)
         self.linear = torch.nn.Sequential(torch.nn.Linear(hidden_channels, hidden_channels),
-                                          torch.nn.BatchNorm1d(hidden_channels), torch.nn.ReLU(), torch.nn.Dropout(0.1),
+                                          # torch.nn.BatchNorm1d(hidden_channels), torch.nn.ReLU(), torch.nn.Dropout(0.1),
+                                          torch.nn.ReLU(),
                                           torch.nn.Linear(hidden_channels, output_channels))    
         
     def forward(self, times, coeffs, final_index, z0=None, stream=False, **kwargs):
         # control module
-        self.func.set_X(*coeffs, times)
+        # self.func.set_X(*coeffs, times)
+        self.func.set_X(torch.cat(coeffs, dim=-1), times)
         
         if z0 is None:
             assert self.initial, "Was not expecting to be given no value of z0."
@@ -118,20 +121,20 @@ class NeuralSDE_forecasting(torch.nn.Module):
                 z0_extra = torch.zeros(*batch_dims, self.input_channels, dtype=z0.dtype, device=z0.device)
                 z0 = torch.cat([z0_extra, z0], dim=-1)
         
-        # Figure out what times we need to solve for
-        if stream:
-            t = times
-        else:
-            # faff around to make sure that we're outputting at all the times we need for final_index.
-            sorted_final_index, inverse_final_index = final_index.unique(sorted=True, return_inverse=True)
-            if 0 in sorted_final_index:
-                sorted_final_index = sorted_final_index[1:]
-                final_index = inverse_final_index
-            else:
-                final_index = inverse_final_index + 1
-            if len(times) - 1 in sorted_final_index:
-                sorted_final_index = sorted_final_index[:-1]
-            t = torch.cat([times[0].unsqueeze(0), times[sorted_final_index], times[-1].unsqueeze(0)])
+#         if stream:
+#             t = times
+#         else:
+#             sorted_final_index, inverse_final_index = final_index.unique(sorted=True, return_inverse=True)
+#             if 0 in sorted_final_index:
+#                 sorted_final_index = sorted_final_index[1:]
+#                 final_index = inverse_final_index
+#             else:
+#                 final_index = inverse_final_index + 1
+#             if len(times) - 1 in sorted_final_index:
+#                 sorted_final_index = sorted_final_index[:-1]
+
+#             t = torch.cat([times[0].unsqueeze(0), times[sorted_final_index], times[-1].unsqueeze(0)])
+        t = times
         
         # Switch default solver
         if 'method' not in kwargs:
@@ -144,7 +147,7 @@ class NeuralSDE_forecasting(torch.nn.Module):
                 time_diffs = times[1:] - times[:-1]
                 options['dt'] = max(time_diffs.min().item(), 1e-3)
                         
-        time_diffs = times[1:] - times[:-1]
+        # time_diffs = times[1:] - times[:-1]
         dt = max(time_diffs.min().item(), 1e-3)
                         
         z_t = torchsde.sdeint(sde=self.func,
