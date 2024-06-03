@@ -29,7 +29,7 @@ For example, a critical component of the code is the `diffusion_model` class fou
 - `noise_option`: It controls the diffusion function in the SDE. Options include constant, additive, multiplicative, among others. The ability to manipulate the diffusion function is key to exploring how different noise models affect the performance and stability of the proposed Neural SDEs.
 
 **Proposed methods**
-- Naive Neural SDE: `neuralsde_1_18`
+- Naive Neural SDE: `neuralsde_3_18`
 - Neural LSDE: `neuralsde_2_16`
 - Neural LNSDE: `neuralsde_4_17`
 - Neural GSDE: `neuralsde_6_17`
