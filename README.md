@@ -35,7 +35,9 @@ For example, a critical component of the code is the `diffusion_model` class fou
 - Neural GSDE: `neuralsde_6_17`
 
 **Proposed methods (implementation with simple example)**
+
 Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/tree/main/tutorial) for the detailed explanations. 
+
 - Neural ODE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20ODE.ipynb)
 $$dz(t) = f(t, z(t); \theta_f)$$
 
