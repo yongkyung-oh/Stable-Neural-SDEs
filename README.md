@@ -28,11 +28,31 @@ For example, a critical component of the code is the `diffusion_model` class fou
 - `input_option`: This setting is crucial for the diffusion term. It dictates whether to combine the original observation with a controlled path or not. This flexibility allows for experimenting with how the model handles various types of input data, particularly in the context of irregular time series.
 - `noise_option`: It controls the diffusion function in the SDE. Options include constant, additive, multiplicative, among others. The ability to manipulate the diffusion function is key to exploring how different noise models affect the performance and stability of the proposed Neural SDEs.
 
-**Proposed methods**
-- Naive Neural SDE: `neuralsde_3_18`
+**Proposed methods (implementation with combinations)**
+- Neural SDE: `neuralsde_3_18`
 - Neural LSDE: `neuralsde_2_16`
 - Neural LNSDE: `neuralsde_4_17`
 - Neural GSDE: `neuralsde_6_17`
+
+**Proposed methods (implementation with simple example)**
+Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/tree/main/tutorial) for the detailed explanations. 
+- Neural ODE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20ODE.ipynb)
+$$dz(t) = f(t, z(t); \theta_f)$$
+
+- Neural CDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20CDE.ipynb)
+$$dz(t) = f(t, z(t); \theta_f) \, dX(t)$$
+
+- Neural SDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE.ipynb)
+$$dz(t) = f(t, z(t); \theta_f) \, dt + g(t, z(t); \theta_g) \, dW_t$$
+
+- Proposed Neural LSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LSDE.ipynb)
+$$dz(t) = \gamma(\tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$$
+
+- Proposed Neural LNSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE.ipynb)
+$$dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$$
+
+- Proposed Neural GSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE.ipynb)
+$$\frac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$$
 
 **Current State of the Code and Future Plans**:
 - It is acknowledged that the current version of the code is somewhat messy. This candid admission suggests ongoing development and refinement of the codebase.
