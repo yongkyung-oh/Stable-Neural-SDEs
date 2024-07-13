@@ -117,25 +117,25 @@ def _train_loop(train_dataloader, val_dataloader, model, times, optimizer, loss_
     breaking = False
 
     if step_mode == 'trainloss':
-        print("trainloss")
+        # print("trainloss")
         epoch_per_metric = 1
         plateau_terminate = 50
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5)
 
     elif step_mode=='valloss':
-        print("valloss")
+        # print("valloss")
         epoch_per_metric = 1
         plateau_terminate = 50
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5)
 
     elif step_mode == 'valaccuracy':
-        print("valaccuracy")
+        # print("valaccuracy")
         epoch_per_metric = 1
         plateau_terminate = 50
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5, mode='max')
 
     elif step_mode=='valauc':
-        print("valauc")
+        # print("valauc")
         epoch_per_metric = 1
         plateau_terminate = 50
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5, mode='max')
