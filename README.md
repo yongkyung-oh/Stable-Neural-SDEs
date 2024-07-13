@@ -1,5 +1,5 @@
 # Stable Neural Stochastic Differential Equations (Neural SDEs)
-This repository contains the PyTorch implementation for the paper [Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data](https://openreview.net/forum?id=4VIgNuQ1pY). Spotlight presentation (Notable Top 5%). 
+This repository contains the PyTorch implementation for the paper [Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data](https://arxiv.org/abs/2402.14989). Spotlight presentation (Notable Top 5%). 
 
 > Oh, Y., Lim, D., & Kim, S. (2024, May). Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data. In The Twelfth International Conference on Learning Representations.
 
@@ -13,7 +13,7 @@ The code for each experiment is meticulously organized into separate folders, al
 - `Benchmark_classification`: PhysioNet Sepsis and Speech Commands, implemented from Kidger, P. et al. (2020) [1] (https://github.com/patrick-kidger/NeuralCDE)
 - `Benchmark_interpolation`: PhysionNet Mortality, implemented from Shukla, S. et al. (2020) [2] (https://github.com/reml-lab/mTAN)
 - `Benchmark_forecasting`: MuJoCo Foresting task, implemented from Jhin, S. et al. (2021) [3] (https://github.com/sheoyon-jhin/ANCDE)
-- `torch_ists`: motivated from Kidger, P., et al. (2020) [1], we develop new python/pytorch wrapper for extensive experiments on robustness to missing data
+- `torch_ists`: motivated from Kidger, P., et al. (2020) [1], we develop new python/pytorch wrapper for extensive experiments on robustness to missing data. Please refer the up-to-date version: [torch_ists](https://github.com/yongkyung-oh/torch-ists).
 
 [1] Kidger, P., Morrill, J., Foster, J., & Lyons, T. (2020). Neural controlled differential equations for irregular time series. Advances in Neural Information Processing Systems, 33, 6696-6707.
 
