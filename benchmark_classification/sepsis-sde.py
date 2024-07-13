@@ -64,7 +64,7 @@ def main(intensity,                                                             
     num_classes = 2
     return common.main(name, model_name, times, train_dataloader, val_dataloader, test_dataloader, device,
                        new_make_model, num_classes, max_epochs, lr, kwargs, pos_weight=torch.tensor(pos_weight),
-                       step_mode=True)
+                       step_mode='valauc')
 
 
 def run_all(intensity, device, model_names=['staticsde', 'naivesde', 'neurallsde', 'neurallnsde', 'neuralgsde']):

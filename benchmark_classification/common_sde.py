@@ -116,15 +116,33 @@ def _train_loop(train_dataloader, val_dataloader, model, times, optimizer, loss_
     history = []
     breaking = False
 
-    if step_mode:
+    if step_mode == 'trainloss':
+        print("trainloss")
         epoch_per_metric = 1
         plateau_terminate = 50
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5)
-    else:
+
+    elif step_mode=='valloss':
+        print("valloss")
         epoch_per_metric = 1
         plateau_terminate = 50
-        # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=1, mode='max')
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=10, eta_min=1e-5)
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5)
+
+    elif step_mode == 'valaccuracy':
+        print("valaccuracy")
+        epoch_per_metric = 1
+        plateau_terminate = 50
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5, mode='max')
+
+    elif step_mode=='valauc':
+        print("valauc")
+        epoch_per_metric = 1
+        plateau_terminate = 50
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=5, mode='max')
+        
+    elif step_mode=='none':
+        epoch_per_metric=1 
+        plateau_terminate=100
 
     tqdm_range = tqdm.tqdm(range(max_epochs))
     tqdm_range.write('Starting training for model:\n\n' + str(model) + '\n\n')
@@ -172,11 +190,16 @@ def _train_loop(train_dataloader, val_dataloader, model, times, optimizer, loss_
                                  ''.format(epoch, train_metrics.loss, train_metrics.accuracy, val_metrics.loss,
                                            val_metrics.accuracy))                
                 
-            if step_mode:
-                # scheduler.step(train_metrics.loss)
-                scheduler.step()
-            else:
+            if step_mode == 'trainloss':
+                scheduler.step(train_metrics.loss)
+            elif step_mode == 'valloss':
+                scheduler.step(val_metrics.loss)
+            elif step_mode == 'valaccuracy':
                 scheduler.step(val_metrics.accuracy)
+            elif step_mode == 'valauc':
+                scheduler.step(val_metrics.auroc)
+            else:
+                scheduler.step()
             history.append(_AttrDict(epoch=epoch, train_metrics=train_metrics, val_metrics=val_metrics))
 
             if epoch > best_train_loss_epoch + plateau_terminate:

@@ -37,7 +37,7 @@ def main(device='cuda', max_epochs=200, *,                                      
     name = None if dry_run else 'speech_commands'
     num_classes = 10
     return common.main(name, model_name, times, train_dataloader, val_dataloader, test_dataloader, device, new_make_model,
-                       num_classes, max_epochs, lr, kwargs, step_mode=True)
+                       num_classes, max_epochs, lr, kwargs, step_mode='valaccuracy')
 
 
 def run_all(device, model_names=['staticsde', 'naivesde', 'neurallsde', 'neurallnsde', 'neuralgsde']):
