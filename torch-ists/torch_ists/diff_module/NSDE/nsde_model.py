@@ -58,7 +58,7 @@ class NeuralSDE(torch.nn.Module):
         out = self.linear(z)
         return out, z
     
-    
+# deprecated
 class NN_model(torch.nn.Module):
     def __init__(self, input_channels, hidden_channels, hidden_hidden_channels, num_hidden_layers, sigma=0.1, input_option='z', noise=True):
         super().__init__()
@@ -204,7 +204,7 @@ class Diffusion_model(torch.nn.Module):
 
         if self.input_option in [5,6]: # geometric
             # instead of z * y, using logistics
-            z = z * (1 - torch.nan_to_num(y).sigmoid())
+            z = z * y.tanh() # z = z * (1 - torch.nan_to_num(y).sigmoid())
         else:
             pass
 

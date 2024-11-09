@@ -248,7 +248,7 @@ class Diffusion_model(torch.nn.Module):
 
         if self.input_option in [5,6]: # geometric
             # instead of z * y, using logistics
-            z = z * (1 - torch.nan_to_num(y).sigmoid())
+            z = z * y.tanh() # z = z * (1 - torch.nan_to_num(y).sigmoid())
         else:
             pass
 
