@@ -152,7 +152,7 @@ def run_model(data_name, missing_rate, model_name, model_config, EPOCHS=100, SEE
     if not os.path.exists('out/{}/{}'.format(data_name, str(missing_rate))):
         os.mkdir('out/{}/{}'.format(data_name, str(missing_rate)))
 
-    X_missing, X_mask, X_delta, coeffs = preprocess(X, missing_rate=missing_rate, interpolate=interpolate, use_intensity=use_intensity)
+    X_missing, X_mask, X_delta, coeffs = preprocess(X, missing_rate=missing_rate, interpolate=interpolate, use_intensity=use_intensity, SEED=SEED)
     X_train = X_missing[train_idx]
 
     out = []

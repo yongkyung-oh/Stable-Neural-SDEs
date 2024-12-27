@@ -112,7 +112,7 @@ def get_data(dataname):
     return X, y
 
         
-def preprocess(X, missing_rate=None, interpolate='natural', use_intensity=True):
+def preprocess(X, missing_rate=None, interpolate='natural', use_intensity=True, SEED=0):
     '''
     preprocess data and get features
     '''
@@ -126,8 +126,12 @@ def preprocess(X, missing_rate=None, interpolate='natural', use_intensity=True):
     X_delta = []
     for Xi in tqdm(X):
         if missing_rate:
-            removed_points = torch.randperm(max_len)[:int(max_len * missing_rate)].sort().values
-            Xi[:, removed_points] = float('nan')
+            # removed_points = torch.randperm(max_len)[:int(max_len * missing_rate)].sort().values
+            # Xi[:, removed_points] = float('nan')
+            for dim in range(Xi.size(0)):  # Iterate over each channel (dimension)
+                generator = torch.Generator().manual_seed(SEED)
+                removed_points = torch.randperm(max_len, generator=generator)[:int(max_len * missing_rate)].sort().values
+                Xi[dim, removed_points] = float('nan')  # Remove points independently for each channel
         else:
             pass
 
