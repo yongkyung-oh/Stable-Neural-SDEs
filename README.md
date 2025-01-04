@@ -63,12 +63,18 @@ $$\frac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) dt + \sigma(t; \th
 
 ---
 
+**Robustness to Missingness Experiment**:
+
+We are refactoring our experimental pipeline to use the independent library `torch-ists`. For reproducibility, we recommend using this updated version. You can find the library at the [torch-ists repository](https://github.com/yongkyung-oh/torch-ists).
+
+---
+
 ## Reference
 ```
-@inproceedings{oh2023stable,
+@inproceedings{oh2024stable,
   title={Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data},
   author={Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
   booktitle={The Twelfth International Conference on Learning Representations},
-  year={2023}
+  year={2024}
 }
 ```
