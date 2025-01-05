@@ -71,7 +71,8 @@ We are refactoring our experimental pipeline to use the independent library `tor
 
 ## Reference
 ```
-@inproceedings{oh2024stable,
+@inproceedings{
+  oh2024stable,
   title={Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data},
   author={Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
   booktitle={The Twelfth International Conference on Learning Representations},
