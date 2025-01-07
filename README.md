@@ -47,6 +47,9 @@ $$dz(t) = f(t, z(t); \theta_f) dX(t)$$
 - Neural SDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE.ipynb)
 $$dz(t) = f(t, z(t); \theta_f) dt + g(t, z(t); \theta_g) dW_t$$
 
+- Neural SDE + KLD [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE%20%2B%20KLD.ipynb)
+$$dz(t) = f(t, z(t); \theta_f) dt + g(t, z(t); \theta_g) dW_t$$
+
 - Proposed Neural LSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LSDE.ipynb)
 $$dz(t) = \gamma(\tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
 
