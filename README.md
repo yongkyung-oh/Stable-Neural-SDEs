@@ -73,7 +73,7 @@ We are refactoring our experimental pipeline to use the independent library `tor
 ---
 
 ## Reference
-```
+```bibtex
 @inproceedings{
   oh2024stable,
   title={Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data},
