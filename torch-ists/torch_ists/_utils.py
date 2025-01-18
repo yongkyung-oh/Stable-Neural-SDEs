@@ -120,35 +120,46 @@ def preprocess(X, missing_rate=None, interpolate='natural', use_intensity=True, 
     final_index = lengths - 1
     max_len = lengths.max()
     
-    # get features
+    # Initialize feature lists
     X_missing = []
     X_mask = []
     X_delta = []
+
     for Xi in tqdm(X):
+        # Apply missing rate if specified
         if missing_rate:
             for dim in range(Xi.size(0)):  # Iterate over each channel (dimension)
                 generator = torch.Generator().manual_seed(SEED)
                 removed_points = torch.randperm(max_len, generator=generator)[:int(max_len * missing_rate)].sort().values
                 Xi[dim, removed_points] = float('nan')  # Remove points independently for each channel
-        else:
-            pass
 
-        mask = (~Xi[0].isnan()).float()
-        mask_n = (Xi[0].isnan()).float()
+        # Compute mask and delta for each channel
+        mask = (~Xi.isnan()).float()  # Observed values (1 for observed, 0 for missing)
+        delta_list = []
+        for dim in range(Xi.size(0)):  # Iterate over features (channels)
+            mask_n = (Xi[dim].isnan()).float()  # Missing values (1 for missing, 0 for observed)
+            s = pd.Series(mask_n.cpu().numpy())  # Convert to pandas Series for grouping
+            s.iloc[0] = 0  # Ensure the gap of the first observation is zero
+            delta = s.groupby(s.eq(0).cumsum()).cumsum()
+            delta = (delta + 1).shift().fillna(0).to_numpy()  # Shift and fill NaN
+            delta = torch.tensor(delta, dtype=torch.float32)
+            delta_list.append(delta)
 
-        s = pd.Series(mask_n)
-        s[0] = 0
-        delta = s.groupby(s.eq(0).cumsum()).cumsum()
-        delta = (delta + 1).shift().fillna(0)
-        delta = torch.tensor(delta)
+        # Stack deltas for all features
+        delta = torch.stack(delta_list)  # Shape: [D, L]
 
-        X_missing.append(Xi)
+        # (Optional) Replace NaNs in Xi with zeros for X_missing
+        Xi_missing = Xi.clone()
+        # Xi_missing[Xi_missing.isnan()] = 0.0
+
+        # Append processed features
+        X_missing.append(Xi_missing)
         X_mask.append(mask)
         X_delta.append(delta)
 
-    X_missing = torch.stack(X_missing).permute(0,2,1) # [N,L,D]
-    X_mask = torch.stack(X_mask) # [N,L,D]
-    X_delta = torch.stack(X_delta) # [N,L,D]
+    X_missing = torch.stack(X_missing).permute(0, 2, 1)  # [N, L, D]
+    X_mask = torch.stack(X_mask).permute(0, 2, 1)  # [N, L, D]
+    X_delta = torch.stack(X_delta).permute(0, 2, 1)  # [N, L, D]
     
     # feature for interpolation # take long time
     times = torch.linspace(0, 1, max_len)
