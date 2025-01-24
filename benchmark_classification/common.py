@@ -273,21 +273,7 @@ def main(name, times, train_dataloader, val_dataloader, test_dataloader, device,
 
 def make_model(name, input_channels, output_channels, hidden_channels, hidden_hidden_channels, num_hidden_layers,
                use_intensity, initial):
-    if name == 'neuralsde':
-        def make_model():
-            vector_field = models.NN_model(input_channels=input_channels, hidden_channels=hidden_channels,
-                                    hidden_hidden_channels=hidden_channels, num_hidden_layers=num_hidden_layers)
-            model = models.NeuralSDE(func=vector_field, input_channels=input_channels,
-                                     hidden_channels=hidden_channels, output_channels=output_channels, initial=initial)
-            return model, vector_field
-    elif name == 'neuralou':
-        def make_model():
-            vector_field = models.OU_model(input_channels=input_channels, hidden_channels=hidden_channels,
-                                           hidden_hidden_channels=hidden_channels, num_hidden_layers=num_hidden_layers)
-            model = models.NeuralSDE(func=vector_field, input_channels=input_channels,
-                                     hidden_channels=hidden_channels, output_channels=output_channels, initial=initial)
-            return model, vector_field
-    elif name == 'ncde':
+    if name == 'ncde':
         def make_model():
             vector_field = models.FinalTanh(input_channels=input_channels, hidden_channels=hidden_channels,
                                             hidden_hidden_channels=hidden_hidden_channels,
