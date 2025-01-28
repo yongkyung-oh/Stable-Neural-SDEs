@@ -125,10 +125,10 @@ def preprocess(X, missing_rate=None, interpolate='natural', use_intensity=True, 
     X_mask = []
     X_delta = []
 
+    generator = torch.Generator().manual_seed(SEED)
     for Xi in tqdm(X):
         # Apply missing rate if specified
         if missing_rate:
-            generator = torch.Generator().manual_seed(SEED)
             for dim in range(Xi.size(0)):  # Iterate over each channel (dimension)
                 removed_points = torch.randperm(max_len, generator=generator)[:int(max_len * missing_rate)].sort().values
                 Xi[dim, removed_points] = float('nan')  # Remove points independently for each channel
