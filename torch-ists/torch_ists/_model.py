@@ -71,8 +71,7 @@ def train(model, optimizer, criterion, train_iter, device):
         y = batch['label'].long().to(device)
         seq = torch.stack([
             torch.nan_to_num(batch['x_missing'], 0),
-            batch['x_mask'].unsqueeze(-1).repeat((1, 1, batch['x_missing'].shape[-1])),
-            batch['x_delta'].unsqueeze(-1).repeat((1, 1, batch['x_missing'].shape[-1])),
+            batch['x_mask'], batch['x_delta'],
         ], dim=1).to(device)
 
         optimizer.zero_grad()
@@ -100,8 +99,7 @@ def evaluate(model, criterion, val_iter, device):
             y = batch['label'].long().to(device)
             seq = torch.stack([
                 torch.nan_to_num(batch['x_missing'], 0),
-                batch['x_mask'].unsqueeze(-1).repeat((1, 1, batch['x_missing'].shape[-1])),
-                batch['x_delta'].unsqueeze(-1).repeat((1, 1, batch['x_missing'].shape[-1])),
+                batch['x_mask'], batch['x_delta'],
             ], dim=1).to(device)
 
             logit = model(seq, batch['coeffs'].to(device))
