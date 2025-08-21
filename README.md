@@ -36,26 +36,15 @@ For example, a critical component of the code is the `diffusion_model` class fou
 
 Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/tree/main/tutorial) for the detailed explanations. 
 
-- Neural ODE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20ODE.ipynb)
-$$dz(t) = f(t, z(t); \theta_f) dt$$
-
-- Neural CDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20CDE.ipynb)
-$$dz(t) = f(t, z(t); \theta_f) dX(t)$$
-
-- Neural SDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE.ipynb)
-$$dz(t) = f(t, z(t); \theta_f) dt + g(t, z(t); \theta_g) dW_t$$
-
-- Neural SDE + KLD [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE%20%2B%20KLD.ipynb)
-$$dz(t) = f(t, z(t); \theta_f) dt + g(t, z(t); \theta_g) dW_t$$
-
-- Proposed Neural LSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LSDE.ipynb)
-$$dz(t) = \gamma(\tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
-
-- Proposed Neural LNSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE.ipynb)
-$$dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
-
-- Proposed Neural GSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE.ipynb)
-$$\frac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
+| Model                 | Formulation                                                                                   | Example Link                                                                                                             |
+|------------------------|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+| Neural ODE            | $dz(t) = f(t, z(t); \theta_f) \, dt$                                                          | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20ODE.ipynb) |
+| Neural CDE            | $dz(t) = f(t, z(t); \theta_f) \, dX(t)$                                                       | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20CDE.ipynb) |
+| Neural SDE            | $dz(t) = f(t, z(t); \theta_f) \, dt + g(t, z(t); \theta_g) \, dW_t$                           | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE.ipynb) |
+| Neural SDE + KLD      | $dz(t) = f(t, z(t); \theta_f) \, dt + g(t, z(t); \theta_g) \, dW_t$                           | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE%20%2B%20KLD.ipynb) |
+| Proposed Neural LSDE  | $dz(t) = \gamma(\tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$        | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LSDE.ipynb) |
+| Proposed Neural LNSDE | $dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$     | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE.ipynb) |
+| Proposed Neural GSDE  | $\dfrac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$ | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE.ipynb) |
 
 **Current State of the Code and Future Plans**:
 - It is acknowledged that the current version of the code is somewhat messy. This candid admission suggests ongoing development and refinement of the codebase.
