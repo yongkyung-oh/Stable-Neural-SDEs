@@ -1,9 +1,7 @@
 # Stable Neural Stochastic Differential Equations (Neural SDEs)
 This repository contains the PyTorch implementation for the paper [Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data](https://arxiv.org/abs/2402.14989). Spotlight presentation (Notable Top 5%). 
 
-> Oh, Y., Lim, D., & Kim, S. (2024, May). Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data. In The Twelfth International Conference on Learning Representations.
-
-> Oh, Y., Lim, D., & Kim, S. (2024). Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data. arXiv preprint arXiv:2402.14989.
+> Oh, Y., Lim, D., & Kim, S. (2024). Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data. The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024. https://openreview.net/forum?id=4VIgNuQ1pY
 
 ---
 
@@ -74,11 +72,11 @@ We are refactoring our experimental pipeline to use the independent library `tor
 
 ## Reference
 ```bibtex
-@inproceedings{
-  oh2024stable,
-  title={Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data},
-  author={Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
-  booktitle={The Twelfth International Conference on Learning Representations},
-  year={2024}
+@inproceedings{oh_stable_2024,
+	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}},
+	author       = {Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
+	year         = 2024,
+	booktitle    = {The {Twelfth} {International} {Conference} on {Learning} {Representations}, {ICLR} 2024, {Vienna}, {Austria}, {May} 7-11, 2024},
+	publisher    = {OpenReview.net}
 }
 ```
