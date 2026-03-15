@@ -165,3 +165,7 @@ AGENTS.md
 CLAUDE.md
 .claude/
 .agents/
+
+# Upstream comparison baselines
+references/*
+!references/.gitkeep

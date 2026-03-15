@@ -12,6 +12,18 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 
 args = parse_args()
 
+_VALID_SDE_METHODS = {"euler", "srk"}
+
+
+def _resolve_sde_method(method):
+    if method == "rk4":
+        return "euler"
+    if method not in _VALID_SDE_METHODS:
+        raise ValueError(
+            f"Unsupported SDE solver '{method}'. Use one of: {sorted(_VALID_SDE_METHODS)}."
+        )
+    return method
+
 def main(
     manual_seed=args.seed,
     intensity=args.intensity, 
@@ -39,7 +51,6 @@ def main(
 ):                                                                
     
     batch_size = 1024
-    lr = 1e-3 
     PATH = os.path.dirname(os.path.abspath(__file__))
 
     np.random.seed(manual_seed)
@@ -78,7 +89,7 @@ def main(
         name = 'MuJoCo_' + str(missing_rate)
 
     solver_kwargs = dict(kwargs)
-    solver_kwargs['method'] = method
+    solver_kwargs['method'] = _resolve_sde_method(method)
     
     # main for forecasting 
     return common.main_forecasting(name, model_name, times, train_dataloader, val_dataloader, test_dataloader, device,

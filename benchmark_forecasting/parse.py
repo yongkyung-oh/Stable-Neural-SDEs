@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument('--step_mode', type=str, default='valloss',help='Learning Rate Scheduler')
     parser.add_argument('--dataset_name', type=str,help='Dataset Name')
     parser.add_argument('--missing_rate', type=float, default=0.3,help='Missing Rate')
-    parser.add_argument('--method', type=str, default='rk4', help='ode solver')
+    parser.add_argument('--method', type=str, default='rk4', help='solver method')
     parser.add_argument('--weight_decay', type=float, default=1e-5, help='weight_decay')
     parser.add_argument('--loss', type=str, default='mse', help='loss setting')
     parser.add_argument('--reg', type=str, default='l2', help='regularization setting')
