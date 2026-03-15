@@ -89,11 +89,12 @@ def _train_loop_forecasting(model_name, train_dataloader, val_dataloader,test_da
                            writer, device, kwargs, step_mode) :
                            
     model.train()
-    best_model = model
+    best_model = copy.deepcopy(model)
     best_train_loss = math.inf
     
     best_train_loss_epoch = 0
-    best_val_loss = 0
+    best_val_loss = math.inf
+    best_val_loss_epoch = 0
     
     history = []
     breaking = False
@@ -169,6 +170,8 @@ def _train_loop_forecasting(model_name, train_dataloader, val_dataloader,test_da
             if val_metrics.loss * 1.0001 < best_val_loss:
                 best_val_loss = val_metrics.loss
                 best_val_loss_epoch = epoch
+                del best_model
+                best_model = copy.deepcopy(model)
          
             tqdm_range.write('Epoch: {} | Train loss: {:.3} | Val loss: {:.3} | Test loss : {:.3}'.format(epoch, train_metrics.loss, val_metrics.loss, test_metrics.loss))
             
@@ -248,8 +251,7 @@ def main_forecasting(name, model_name, times, train_dataloader, val_dataloader, 
     eval_fn = torch.nn.functional.mse_loss
     model.to(device)
     # optimizer
-    # optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay = weight_decay)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay = lr*0.01)
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
     # train function
     history = _train_loop_forecasting(model_name, train_dataloader, val_dataloader,test_dataloader, model, times, optimizer, loss_fn, eval_fn, max_epochs,
                                       writer, device, kwargs, step_mode)

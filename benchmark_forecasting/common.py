@@ -177,11 +177,12 @@ def _train_loop_forecasting(model_name, train_dataloader, val_dataloader,test_da
                            writer, device, c1, c2, kwargs, step_mode) :
                            
     model.train()
-    best_model = model
+    best_model = copy.deepcopy(model)
     best_train_loss = math.inf
     
     best_train_loss_epoch = 0
-    best_val_loss = 0
+    best_val_loss = math.inf
+    best_val_loss_epoch = 0
     
     history = []
     breaking = False
@@ -283,6 +284,8 @@ def _train_loop_forecasting(model_name, train_dataloader, val_dataloader,test_da
             if val_metrics.loss * 1.0001 < best_val_loss:
                 best_val_loss = val_metrics.loss
                 best_val_loss_epoch = epoch
+                del best_model
+                best_model = copy.deepcopy(model)
          
             
             tqdm_range.write('Epoch: {}  Train loss: {:.3} MSE loss : {:.3} Logpz : {:.3}  Val loss: {:.3}  '

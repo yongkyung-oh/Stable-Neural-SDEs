@@ -51,7 +51,7 @@ class LatentSDE(torchsde.SDEIto):
         self.linears = torch.nn.ModuleList(torch.nn.Linear(hidden_hidden_channels, hidden_hidden_channels)
                                            for _ in range(num_hidden_layers - 1))
         self.linear_out = torch.nn.Linear(hidden_hidden_channels, hidden_channels-1) # -1 for augmented dynamics
-        self.embedding = torch.nn.Linear(hidden_channels, hidden_channels)
+        self.embedding = torch.nn.Linear(hidden_channels - 1, hidden_channels)  # -1: exclude KL accumulator channel
 
         # q(y0).
         self.qy0_mean = nn.Parameter(torch.tensor([[mu]]), requires_grad=True)
@@ -139,13 +139,12 @@ class LatentSDE(torchsde.SDEIto):
             names={'drift': 'f_aug', 'diffusion': 'g_aug'},
             **kwargs
         )
-        # ys, logqp_path = aug_ys[:, :, 0:1], aug_ys[-1, :, 1]
-        # logqp = (logqp0 + logqp_path).mean(dim=0)  # KL(t=0) + KL(path).
-        # return ys, logqp
-
         aug_ys = aug_ys.permute(1,0,2) # [N,L,D]
-        out = self.embedding(aug_ys)
-        return out, aug_ys
+        latent = aug_ys[:, :, :-1]  # exclude KL accumulator channel
+        logqp_path = aug_ys[:, -1, -1]  # KL(path) from final time step
+        logqp = (logqp0 + logqp_path).mean(dim=0)  # KL(t=0) + KL(path)
+        out = self.embedding(latent)
+        return out, latent, logqp
 
     @property
     def py0_std(self):

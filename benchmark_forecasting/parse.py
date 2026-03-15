@@ -1,9 +1,23 @@
 import argparse
 
+
+def _parse_bool(value):
+    if isinstance(value, bool):
+        return value
+
+    lowered = value.strip().lower()
+    if lowered in {"true", "1", "yes", "y"}:
+        return True
+    if lowered in {"false", "0", "no", "n"}:
+        return False
+
+    raise argparse.ArgumentTypeError(f"Expected a boolean value, got '{value}'.")
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description='LEAP')
     parser.add_argument('--seed', type=int, default=0,help='Seed - Test your luck!')   
-    parser.add_argument('--intensity', type=bool, default=True,help='Intensity')
+    parser.add_argument('--intensity', type=_parse_bool, default=True,help='Intensity')
     parser.add_argument('--model', type=str, default='ncde',help='Model Name')
     parser.add_argument('--h_channels', type=int, default=49,help='Hidden Channels')   
     parser.add_argument('--ode_hidden_hidden_channels', type=int, default=40,help='ODE Func Hidden Hidden Channels')    

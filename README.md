@@ -34,8 +34,9 @@ For example, a critical component of the code is the `diffusion_model` class fou
 
 **Proposed methods (implementation with simple example)**
 
-Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/tree/main/tutorial) for the detailed explanations. 
+Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/tree/main/tutorial) for the public pure-theory notebook set. The public tutorial surface currently contains 10 notebooks; local exploratory variants under `tutorial/internal/` are gitignored and not part of the distributed tutorial set.
 
+<<<<<<< HEAD
 | Model                 | Formulation                                                                                   | Example Link                                                                                                             |
 |------------------------|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
 | Neural ODE            | $dz(t) = f(t, z(t); \theta_f) \, dt$                                                          | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20ODE.ipynb) |
@@ -45,6 +46,34 @@ Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/t
 | Proposed Neural LSDE  | $dz(t) = \gamma(\tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$        | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LSDE.ipynb) |
 | Proposed Neural LNSDE | $dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$     | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE.ipynb) |
 | Proposed Neural GSDE  | $\dfrac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$ | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE.ipynb) |
+=======
+- Neural ODE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20ODE.ipynb)
+$$dz(t) = f(t, z(t); \theta_f) dt$$
+
+- Neural CDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20CDE.ipynb)
+$$dz(t) = f(t, z(t); \theta_f) dX(t)$$
+
+- Neural SDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE.ipynb)
+$$dz(t) = f(t, z(t); \theta_f) dt + g(t, z(t); \theta_g) dW_t$$
+
+- Neural SDE + KLD [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20SDE%20%28%2B%20KLD%29.ipynb)
+$$dz(t) = f(t, z(t); \theta_f) dt + g(t, z(t); \theta_g) dW_t$$
+
+- Proposed Neural LSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LSDE.ipynb)
+$$dz(t) = \gamma(\tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
+
+- Proposed Neural LSDE + KLD [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LSDE%20%28%2B%20KLD%29.ipynb)
+$$dz(t) = \gamma(\tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
+
+- Proposed Neural LNSDE (additive ablation) [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE%20%28additive%29.ipynb)
+$$dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
+
+- Proposed Neural LNSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE.ipynb)
+$$dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) z(t) dW_t$$
+
+- Proposed Neural GSDE [(example)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE.ipynb) | [(srk solver)](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE%20%28srk%20solver%29.ipynb)
+$$\frac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) dt + \sigma(t; \theta_\sigma) dW_t$$
+>>>>>>> 01a0f8b (feat: Introduce new Neural GSDE, SDE, and LSDE tutorials with KLD, add core alignment tests, and update various SDE models and benchmarks.)
 
 **Current State of the Code and Future Plans**:
 - It is acknowledged that the current version of the code is somewhat messy. This candid admission suggests ongoing development and refinement of the codebase.
@@ -62,10 +91,17 @@ We are refactoring our experimental pipeline to use the independent library `tor
 ## Reference
 ```bibtex
 @inproceedings{oh_stable_2024,
+<<<<<<< HEAD
 	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}},
 	author       = {Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
 	year         = 2024,
 	booktitle    = {The {Twelfth} {International} {Conference} on {Learning} {Representations}, {ICLR} 2024, {Vienna}, {Austria}, {May} 7-11, 2024},
 	publisher    = {OpenReview.net}
+=======
+	author       = {Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
+	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}.},
+	booktitle    = {The {Twelfth} {International} {Conference} on {Learning} {Representations}, {ICLR} 2024, {Vienna}, {Austria}, {May} 7-11, 2024},
+	year         = 2024
+>>>>>>> 01a0f8b (feat: Introduce new Neural GSDE, SDE, and LSDE tutorials with KLD, add core alignment tests, and update various SDE models and benchmarks.)
 }
 ```

@@ -42,12 +42,12 @@ def main(
     lr = 1e-3 
     PATH = os.path.dirname(os.path.abspath(__file__))
 
-    # np.random.seed(manual_seed)
-    # random.seed(manual_seed)
-    # torch.manual_seed(manual_seed)
-    # torch.cuda.manual_seed(manual_seed)
-    # torch.cuda.manual_seed_all(manual_seed)
-    # torch.random.manual_seed(manual_seed)
+    np.random.seed(manual_seed)
+    random.seed(manual_seed)
+    torch.manual_seed(manual_seed)
+    torch.cuda.manual_seed(manual_seed)
+    torch.cuda.manual_seed_all(manual_seed)
+    torch.random.manual_seed(manual_seed)
     
     time_augment = intensity 
     # data loader
@@ -76,10 +76,13 @@ def main(
         name = None
     else:
         name = 'MuJoCo_' + str(missing_rate)
+
+    solver_kwargs = dict(kwargs)
+    solver_kwargs['method'] = method
     
     # main for forecasting 
     return common.main_forecasting(name, model_name, times, train_dataloader, val_dataloader, test_dataloader, device,
-                                   make_model, max_epochs, lr, weight_decay, loss, reg, scale, writer, kwargs, pos_weight=torch.tensor(10), step_mode=step_mode)
+                                   make_model, max_epochs, lr, weight_decay, loss, reg, scale, writer, solver_kwargs, pos_weight=torch.tensor(10), step_mode=step_mode)
 
 
 if __name__ == "__main__":

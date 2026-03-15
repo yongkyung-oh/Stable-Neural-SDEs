@@ -390,9 +390,9 @@ class ists_layer(nn.Module):
             tt = torch.arange(0, x.shape[1]).to(x.device)  # [L]
             out, hn, loss = self.seq_layer(tt.float(), coeffs, final_index, **kwargs)
         
-        elif self.model_name in ['latentsde']:
+        elif self.model_name in ['latentsde', 'latentsde-kl']:
             out, hn, loss = self.seq_layer(coeffs, times, **kwargs)
-        elif self.model_name in ['latentsde-kl', 'neuralsde-x', 'neuralsde-y', 'neuralsde-z']:
+        elif self.model_name in ['neuralsde-x', 'neuralsde-y', 'neuralsde-z']:
             out, hn = self.seq_layer(coeffs, times, **kwargs)
             
         elif self.model_name in [x for y in flow_models for x in y]:

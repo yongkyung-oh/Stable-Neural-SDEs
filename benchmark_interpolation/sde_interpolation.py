@@ -228,9 +228,9 @@ if __name__ == '__main__':
             torch.save({
                 'args': args,
                 'epoch': itr,
-                # 'rec_state_dict': rec.state_dict(),
-                # 'dec_state_dict': dec.state_dict(),
-                # 'optimizer_state_dict': optimizer.state_dict(),
+                'rec_state_dict': rec.state_dict(),
+                'dec_state_dict': dec.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
                 'loss': -loss,
                 'out': [itr, train_loss / train_n, -avg_reconst / train_n, avg_kl / train_n, mse / train_n, test_mse]
             }, 'interpolation/' + 
