@@ -34,7 +34,7 @@ For example, a critical component of the code is the `diffusion_model` class fou
 
 **Proposed methods (implementation with simple example)**
 
-Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/tree/main/tutorial) for the public pure-theory notebook set. The public tutorial surface currently contains 10 notebooks; local exploratory variants under `tutorial/internal/` are gitignored and not part of the distributed tutorial set.
+Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/tree/main/tutorial) for the pure-theory notebook set. The tutorial set currently contains 10 notebooks.
 
 | Model | Formulation | Example |
 |-------|-------------|---------|

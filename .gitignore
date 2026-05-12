@@ -3,6 +3,16 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# macOS temporary and metadata files
+.DS_Store
+.DS_Store?
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+__MACOSX/
+
 # C extensions
 *.so
 
@@ -77,7 +87,6 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-tutorial/internal/
 
 # IPython
 profile_default/
