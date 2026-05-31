@@ -11,13 +11,13 @@ Paper (ICLR 2024): https://openreview.net/forum?id=4VIgNuQ1pY · arXiv: https://
 The code for each experiment is meticulously organized into separate folders, aligned with the original references used for implementation. 
 
 - `Benchmark_classification`: PhysioNet Sepsis and Speech Commands, implemented from Kidger, P. et al. (2020) [1] (https://github.com/patrick-kidger/NeuralCDE)
-- `Benchmark_interpolation`: PhysionNet Mortality, implemented from Shukla, S. et al. (2020) [2] (https://github.com/reml-lab/mTAN)
+- `Benchmark_interpolation`: PhysionNet Mortality, implemented from Shukla, S. et al. (2021) [2] (https://github.com/reml-lab/mTAN)
 - `Benchmark_forecasting`: MuJoCo Foresting task, implemented from Jhin, S. et al. (2021) [3] (https://github.com/sheoyon-jhin/ANCDE)
 - `torch_ists`: motivated from Kidger, P., et al. (2020) [1], we develop new python/pytorch wrapper for extensive experiments on robustness to missing data. Please refer the up-to-date version: [torch_ists](https://github.com/yongkyung-oh/torch-ists).
 
 [1] Kidger, P., Morrill, J., Foster, J., & Lyons, T. (2020). Neural controlled differential equations for irregular time series. Advances in Neural Information Processing Systems, 33, 6696-6707.
 
-[2] Shukla, S. N., & Marlin, B. (2020, October). Multi-Time Attention Networks for Irregularly Sampled Time Series. In International Conference on Learning Representations.
+[2] Shukla, S. N., & Marlin, B. (2021). Multi-Time Attention Networks for Irregularly Sampled Time Series. In International Conference on Learning Representations.
 
 [3] Jhin, S. Y., Shin, H., Hong, S., Jo, M., Park, S., Park, N., ... & Jeon, S. (2021, December). Attentive Neural Controlled Differential Equations for Time-series Classification and Forecasting. In 2021 IEEE International Conference on Data Mining (ICDM) (pp. 250-259). IEEE Computer Society.
 
@@ -67,7 +67,7 @@ We are refactoring our experimental pipeline to use the independent library `tor
 ```bibtex
 @inproceedings{oh_stable_2024,
 	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}},
-	author       = {Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
+	author       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},
 	year         = 2024,
 	booktitle    = {The {Twelfth} {International} {Conference} on {Learning} {Representations}, {ICLR} 2024, {Vienna}, {Austria}, {May} 7-11, 2024},
 	url          = {https://openreview.net/forum?id=4VIgNuQ1pY},
