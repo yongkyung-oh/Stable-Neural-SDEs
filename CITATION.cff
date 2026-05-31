@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data"
+type: software
+authors:
+  - family-names: Oh
+    given-names: YongKyung
+  - family-names: Lim
+    given-names: Dong-Young
+  - family-names: Kim
+    given-names: Sungil
+repository-code: "https://github.com/yongkyung-oh/Stable-Neural-SDEs"
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data"
+  authors:
+    - family-names: Oh
+      given-names: YongKyung
+    - family-names: Lim
+      given-names: Dong-Young
+    - family-names: Kim
+      given-names: Sungil
+  collection-title: "The Twelfth International Conference on Learning Representations"
+  collection-type: proceedings
+  conference:
+    name: "The Twelfth International Conference on Learning Representations"
+    alias: "ICLR 2024"
+    city: Vienna
+    country: AT
+    date-start: "2024-05-07"
+    date-end: "2024-05-11"
+  year: 2024
+  url: "https://openreview.net/forum?id=4VIgNuQ1pY"
+  identifiers:
+    - type: other
+      value: "arXiv:2402.14989"
+      description: "arXiv preprint identifier"
