@@ -1,5 +1,7 @@
 # Stable Neural Stochastic Differential Equations (Neural SDEs)
-This repository contains the PyTorch implementation for the paper [Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data](https://arxiv.org/abs/2402.14989). Spotlight presentation (Notable Top 5%). 
+This repository contains the PyTorch implementation for the paper [Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data](https://openreview.net/forum?id=4VIgNuQ1pY). Spotlight presentation (Notable Top 5%). 
+
+Paper (ICLR 2024): https://openreview.net/forum?id=4VIgNuQ1pY · arXiv: https://arxiv.org/abs/2402.14989
 
 > Oh, Y., Lim, D., & Kim, S. (2024). Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data. The Twelfth International Conference on Learning Representations, ICLR 2024, Vienna, Austria, May 7-11, 2024. https://openreview.net/forum?id=4VIgNuQ1pY
 
@@ -68,5 +70,8 @@ We are refactoring our experimental pipeline to use the independent library `tor
 	author       = {Oh, YongKyung and Lim, Dongyoung and Kim, Sungil},
 	year         = 2024,
 	booktitle    = {The {Twelfth} {International} {Conference} on {Learning} {Representations}, {ICLR} 2024, {Vienna}, {Austria}, {May} 7-11, 2024},
+	url          = {https://openreview.net/forum?id=4VIgNuQ1pY},
+	eprint       = {2402.14989},
+	archiveprefix = {arXiv},
 }
 ```
