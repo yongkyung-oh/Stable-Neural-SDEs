@@ -23,7 +23,7 @@ The code for each experiment is meticulously organized into separate folders, al
 
 --
 
-For example, a critical component of the code is the `diffusion_model` class found in `NSDE/benchmark_classification/models_sde/neuralsde.py`. This class plays a central role in modeling the Neural SDEs proposed in the study.
+For example, the `diffusion_model` class in `NSDE/benchmark_classification/models_sde/neuralsde.py` implements the Neural SDEs proposed in the study.
 
 - `input_option`: This setting is crucial for the diffusion term. It dictates whether to combine the original observation with a controlled path or not. This flexibility allows for experimenting with how the model handles various types of input data, particularly in the context of irregular time series.
 - `noise_option`: It controls the diffusion function in the SDE. Options include constant, additive, multiplicative, among others. The ability to manipulate the diffusion function is key to exploring how different noise models affect the performance and stability of the proposed Neural SDEs.
@@ -50,16 +50,13 @@ Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/t
 | Proposed Neural LNSDE | $dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, z(t) \, dW_t$ | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE.ipynb) |
 | Proposed Neural GSDE | $\dfrac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$ | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE.ipynb) / [srk solver](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE%20%28srk%20solver%29.ipynb) |
 
-**Current State of the Code and Future Plans**:
-- It is acknowledged that the current version of the code is somewhat messy. This candid admission suggests ongoing development and refinement of the codebase.
-- Despite its current state, the code provides valuable insights into the code-level details of the implementation, which can be beneficial for researchers and practitioners interested in understanding or replicating the study.
-- Future efforts may focus on cleaning and documenting the code further to enhance its accessibility and usability for the wider research community.
+**Note**: The code is organized per experiment folder following the original reference implementations. For a cleaner interface, see the [torch-ists](https://github.com/yongkyung-oh/torch-ists) library.
 
 ---
 
 **Robustness to Missingness Experiment**:
 
-We are refactoring our experimental pipeline to use the independent library `torch-ists`. For reproducibility, we recommend using this updated version. You can find the library at the [torch-ists repository](https://github.com/yongkyung-oh/torch-ists).
+The experimental pipeline for this section has been moved to the independent library `torch-ists`. For reproducibility, use the updated version at the [torch-ists repository](https://github.com/yongkyung-oh/torch-ists).
 
 ---
 
