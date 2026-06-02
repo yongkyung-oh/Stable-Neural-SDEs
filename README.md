@@ -17,7 +17,7 @@ The code for each experiment is meticulously organized into separate folders, al
 
 [1] Kidger, P., Morrill, J., Foster, J., & Lyons, T. (2020). Neural controlled differential equations for irregular time series. Advances in Neural Information Processing Systems, 33, 6696-6707.
 
-[2] Shukla, S. N., & Marlin, B. (2021). Multi-Time Attention Networks for Irregularly Sampled Time Series. In International Conference on Learning Representations.
+[2] Shukla, S. N., & Marlin, B. M. (2021). Multi-Time Attention Networks for Irregularly Sampled Time Series. In 9th International Conference on Learning Representations (ICLR 2021). https://openreview.net/forum?id=4c0J6lwQ4_
 
 [3] Jhin, S. Y., Shin, H., Hong, S., Jo, M., Park, S., Park, N., ... & Jeon, S. (2021, December). Attentive Neural Controlled Differential Equations for Time-series Classification and Forecasting. In 2021 IEEE International Conference on Data Mining (ICDM) (pp. 250-259). IEEE Computer Society.
 
@@ -63,12 +63,19 @@ The experimental pipeline for this section has been moved to the independent lib
 ## Reference
 ```bibtex
 @inproceedings{oh_stable_2024,
-	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}},
 	author       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},
-	year         = 2024,
+	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}},
 	booktitle    = {The {Twelfth} {International} {Conference} on {Learning} {Representations}, {ICLR} 2024, {Vienna}, {Austria}, {May} 7-11, 2024},
-	url          = {https://openreview.net/forum?id=4VIgNuQ1pY},
-	eprint       = {2402.14989},
-	archiveprefix = {arXiv},
+	year         = 2024,
+	url          = {https://openreview.net/forum?id=4VIgNuQ1pY}
+}
+
+@misc{oh_stable_2024_arxiv,
+	author       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},
+	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}},
+	publisher    = {arXiv},
+	year         = 2024,
+	doi          = {10.48550/arXiv.2402.14989},
+	url          = {https://arxiv.org/abs/2402.14989}
 }
 ```
