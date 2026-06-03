@@ -69,7 +69,9 @@ The experimental pipeline for this section has been moved to the independent lib
 	year         = 2024,
 	url          = {https://openreview.net/forum?id=4VIgNuQ1pY}
 }
+```
 
+```bibtex
 @misc{oh_stable_2024_arxiv,
 	author       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},
 	title        = {Stable {Neural} {Stochastic} {Differential} {Equations} in {Analyzing} {Irregular} {Time} {Series} {Data}},
