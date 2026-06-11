@@ -81,6 +81,9 @@ def save_sequence_metric_table(result: SplitEvaluationResult, output_dir: str | 
             "rmse": sequence_result.rmse,
             "mse": sequence_result.mse,
             "mae": sequence_result.mae,
+            "context_rmse": sequence_result.context_rmse,
+            "context_mse": sequence_result.context_mse,
+            "context_mae": sequence_result.context_mae,
             "covered_points": sequence_result.covered_points,
             "context_end_index": sequence_result.context_end_index,
             "context_end_time": sequence_result.context_end_time,
@@ -129,6 +132,8 @@ def _save_sequence_group(
                 "predicted_state": sequence_result.predicted_state,
                 "is_context_point": sequence_result.is_context_point,
                 "is_forecast_point": sequence_result.is_forecast_point,
+                "context_end_index": sequence_result.context_end_index,
+                "context_end_time": sequence_result.context_end_time,
             }
         )
         frame.to_csv(csv_path, index=False)
@@ -142,6 +147,7 @@ def _save_sequence_group(
             is_context_point=sequence_result.is_context_point,
             is_forecast_point=sequence_result.is_forecast_point,
             context_end_index=sequence_result.context_end_index,
+            context_reconstruction_enabled=sequence_result.context_reconstruction_enabled,
         )
         axis.set_title(
             f"{title_prefix}: {sequence_result.name} | {ranking_metric.upper()}={getattr(sequence_result, ranking_metric):.6f}"
@@ -161,7 +167,9 @@ def save_inference_artifacts(
     local_time_values: np.ndarray,
     truth: np.ndarray,
     context_count: int,
+    context_reconstruction: np.ndarray | None,
     predictions: np.ndarray,
+    context_reconstruction_enabled: bool,
     output_dir: str | Path,
 ) -> None:
     output_dir = Path(output_dir)
@@ -174,6 +182,11 @@ def save_inference_artifacts(
 
     rows = []
     for index in range(context_count):
+        context_prediction = (
+            float(context_reconstruction[index])
+            if context_reconstruction is not None
+            else float(truth[index])
+        )
         rows.append(
             {
                 "sequence_name": sequence_name,
@@ -183,8 +196,8 @@ def save_inference_artifacts(
                 "time": time_values[index],
                 "local_time": local_time_values[index],
                 "true_state": truth[index],
-                "prediction": truth[index],
-                "mean_prediction": truth[index],
+                "prediction": context_prediction,
+                "mean_prediction": context_prediction,
                 "std_prediction": 0.0,
             }
         )
@@ -209,6 +222,8 @@ def save_inference_artifacts(
 
     figure, axis = plt.subplots(figsize=(12, 4))
     full_prediction = truth.astype(np.float64).copy()
+    if context_reconstruction is not None:
+        full_prediction[:context_count] = context_reconstruction
     full_prediction[context_count:] = mean_prediction
     is_context_point = np.zeros(sequence_length, dtype=bool)
     is_context_point[:context_count] = True
@@ -221,6 +236,7 @@ def save_inference_artifacts(
         is_context_point=is_context_point,
         is_forecast_point=is_forecast_point,
         context_end_index=context_count - 1,
+        context_reconstruction_enabled=context_reconstruction_enabled,
     )
 
     if predictions.shape[0] > 1:
@@ -259,6 +275,7 @@ def _plot_full_signal(
     is_context_point: np.ndarray,
     is_forecast_point: np.ndarray,
     context_end_index: int,
+    context_reconstruction_enabled: bool,
 ) -> None:
     axis.plot(time_values, truth, color=TRUE_COLOR, linewidth=1.8, label="true_state")
     axis.plot(
@@ -266,7 +283,7 @@ def _plot_full_signal(
         predicted_state[is_context_point],
         color=CONTEXT_COLOR,
         linewidth=2.2,
-        label="context_prefix",
+        label="context_reconstruction" if context_reconstruction_enabled else "context_observed_copy",
     )
     axis.plot(
         time_values[is_forecast_point],

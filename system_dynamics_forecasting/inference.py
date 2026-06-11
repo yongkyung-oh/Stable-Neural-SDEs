@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -15,6 +16,13 @@ from .data import (
 )
 from .models import ModelConfig, build_model
 from .plotting import save_inference_artifacts, save_json
+
+
+@dataclass
+class InferenceOutputs:
+    forecast_prediction: np.ndarray
+    context_reconstruction: np.ndarray | None
+    context_reconstruction_enabled: bool
 
 
 def run_inference(args, model_kind: str) -> Path:
@@ -64,7 +72,7 @@ def run_inference(args, model_kind: str) -> Path:
     )
 
     for record in records:
-        predictions = forecast_record(
+        outputs = forecast_record(
             model=model,
             record=record,
             normalizer=normalizer,
@@ -78,7 +86,9 @@ def run_inference(args, model_kind: str) -> Path:
             local_time_values=record.local_time,
             truth=record.values,
             context_count=context_count,
-            predictions=predictions,
+            context_reconstruction=outputs.context_reconstruction,
+            predictions=outputs.forecast_prediction,
+            context_reconstruction_enabled=outputs.context_reconstruction_enabled,
             output_dir=output_dir,
         )
 
@@ -92,7 +102,7 @@ def forecast_record(
     context_count: int,
     num_realizations: int,
     device: torch.device,
-) -> np.ndarray:
+) -> InferenceOutputs:
     row_index = np.arange(len(record.values), dtype=np.float32)
     context_times = torch.as_tensor(row_index[:context_count], dtype=torch.float32, device=device).unsqueeze(0)
     future_times = torch.as_tensor(row_index[context_count:], dtype=torch.float32, device=device).unsqueeze(0)
@@ -100,13 +110,22 @@ def forecast_record(
     context_states = torch.as_tensor(normalized_states[:context_count], dtype=torch.float32, device=device).unsqueeze(0).unsqueeze(-1)
 
     with torch.no_grad():
-        predictions = model(
+        outputs = model(
             context_times=context_times,
             context_states=context_states,
             future_times=future_times,
             num_samples=max(1, num_realizations),
         )
-    return normalizer.inverse_tensor(predictions).cpu().numpy()[:, 0, :, 0]
+    context_reconstruction = (
+        normalizer.inverse_tensor(outputs.context_reconstruction).cpu().numpy()[0, :, 0]
+        if outputs.context_reconstruction is not None
+        else None
+    )
+    return InferenceOutputs(
+        forecast_prediction=normalizer.inverse_tensor(outputs.forecast_prediction).cpu().numpy()[:, 0, :, 0],
+        context_reconstruction=context_reconstruction,
+        context_reconstruction_enabled=outputs.context_reconstruction is not None,
+    )
 
 
 def _parse_sequence_columns(raw_columns: str | None) -> list[str] | None:

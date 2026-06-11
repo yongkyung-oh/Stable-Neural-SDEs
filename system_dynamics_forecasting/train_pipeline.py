@@ -127,6 +127,7 @@ def run_training(args, model_kind: str) -> Path:
                 normalizer=prepared.normalizer,
                 context_count=prepared.context_count,
                 sequence_length=prepared.sequence_length,
+                context_reconstruction_enabled=(args.init_mode == "encoder"),
             )
 
         if show_progress:
@@ -148,6 +149,7 @@ def run_training(args, model_kind: str) -> Path:
         normalizer=prepared.normalizer,
         context_count=prepared.context_count,
         sequence_length=prepared.sequence_length,
+        context_reconstruction_enabled=(args.init_mode == "encoder"),
     )
     save_loss_history(history, run_dir)
 
@@ -175,6 +177,7 @@ def run_training(args, model_kind: str) -> Path:
             "context_fraction": prepared.context_fraction,
             "context_count": prepared.context_count,
             "sequence_length": prepared.sequence_length,
+            "context_reconstruction_enabled": args.init_mode == "encoder",
             "split_metrics": {result.split_name: result.metrics for result in split_results},
         },
         run_dir / "comparison_summary.json",
@@ -211,19 +214,25 @@ def train_one_epoch(model, dataloader, optimizer, device, num_samples: int, epoc
     for batch in batch_iterator:
         batch = {key: value.to(device) for key, value in batch.items()}
         optimizer.zero_grad(set_to_none=True)
-        predictions = model(
+        outputs = model(
             context_times=batch["context_times"],
             context_states=batch["context_states"],
             future_times=batch["future_times"],
             num_samples=num_samples,
         )
-        mean_prediction = predictions.mean(dim=0)
-        loss = torch.nn.functional.mse_loss(mean_prediction, batch["future_states"])
+        forecast_prediction = outputs.forecast_prediction.mean(dim=0)
+        forecast_loss = torch.nn.functional.mse_loss(forecast_prediction, batch["future_states"])
+        if outputs.context_reconstruction is not None:
+            context_loss = torch.nn.functional.mse_loss(outputs.context_reconstruction, batch["context_states"])
+            loss = 2.0 * forecast_loss + context_loss
+        else:
+            loss = forecast_loss
         loss.backward()
         optimizer.step()
 
-        total_loss += loss.item() * batch["future_states"].numel()
-        total_points += int(batch["future_states"].numel())
+        batch_size = int(batch["sequence_index"].shape[0])
+        total_loss += loss.item() * batch_size
+        total_points += batch_size
 
         if batch_bar is not None:
             running_loss = total_loss / max(1, total_points)
@@ -234,7 +243,17 @@ def train_one_epoch(model, dataloader, optimizer, device, num_samples: int, epoc
     return float(total_loss / max(1, total_points))
 
 
-def save_checkpoint(path, model, optimizer, args, model_config: ModelConfig, normalizer, context_count: int, sequence_length: int) -> None:
+def save_checkpoint(
+    path,
+    model,
+    optimizer,
+    args,
+    model_config: ModelConfig,
+    normalizer,
+    context_count: int,
+    sequence_length: int,
+    context_reconstruction_enabled: bool,
+) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(
@@ -247,6 +266,7 @@ def save_checkpoint(path, model, optimizer, args, model_config: ModelConfig, nor
             "context_fraction": float(args.context_fraction),
             "context_count": int(context_count),
             "sequence_length": int(sequence_length),
+            "context_reconstruction_enabled": bool(context_reconstruction_enabled),
         },
         path,
     )
@@ -273,6 +293,7 @@ def build_data_summary(args, prepared: PreparedData) -> Dict:
         "context_fraction": prepared.context_fraction,
         "context_count": prepared.context_count,
         "forecast_count": prepared.sequence_length - prepared.context_count,
+        "context_reconstruction_enabled": args.init_mode == "encoder",
         "split_counts": {name: len(indices) for name, indices in prepared.split_indices.items()},
         "sample_counts": {name: len(dataset) for name, dataset in prepared.split_datasets.items()},
         "normalizer": {"mean": prepared.normalizer.mean, "std": prepared.normalizer.std},

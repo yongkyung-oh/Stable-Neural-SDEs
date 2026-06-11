@@ -27,6 +27,21 @@ The current sample file has:
 
 All six scripts share the same data preparation, metrics, plotting, checkpoint, and inference utilities.
 
+## Initialization Modes
+
+- `--init-mode encoder`
+- runs a GRU over the observed context prefix using `[state, delta_t]` features
+- decodes the GRU hidden sequence at every context timestamp to reconstruct the context region
+- projects the final GRU hidden state into the latent initial condition used for the ODE/SDE/LNSDE rollout
+- trains with the combined loss `2 * forecast_mse + context_mse`
+- reports both forecast metrics and context reconstruction metrics
+
+- `--init-mode last_state`
+- uses only the final observed context point and its time metadata to initialize the latent state
+- does not reconstruct the context region
+- trains on forecast loss only
+- keeps the context region in plots and CSVs as an observed-prefix copy for display
+
 ## Training
 
 Example commands:
@@ -69,6 +84,8 @@ SDE / LNSDE:
 ```
 
 Training runs show live epoch and batch progress bars with ETA in interactive terminals.
+When `--init-mode encoder` is used, optimization minimizes `2 * forecast_mse + context_mse`.
+When `--init-mode last_state` is used, optimization stays forecast-only.
 
 Example PowerShell command:
 
@@ -83,7 +100,7 @@ python system_dynamics_forecasting/train_neural_ode.py `
 --test-ratio 0.15 `
 --seed 7 `
 --batch-size 64 `
---epochs 100 `
+--epochs 30 `
 --learning-rate 1e-3 `
 --weight-decay 1e-5 `
 --hidden-dim 32 `
@@ -165,6 +182,12 @@ val_best/
 val_worst/
 ```
 
+The split-level metric files and per-sequence metric tables include:
+- forecast metrics: `rmse`, `mse`, `mae`
+- context metrics: `context_rmse`, `context_mse`, `context_mae`
+
+Checkpoint/config metadata also records whether context reconstruction is enabled for the run.
+
 The `train_best`, `train_worst`, `val_best`, and `val_worst` directories contain:
 - one PNG per ranked sequence
 - one CSV per ranked sequence
@@ -177,11 +200,17 @@ Each ranked CSV contains:
 - `predicted_state`
 - `is_context_point`
 - `is_forecast_point`
+- `context_end_index`
+- `context_end_time`
+
+For `--init-mode encoder`, `predicted_state` is model-generated on both the context prefix and the forecast suffix.
+For `--init-mode last_state`, `predicted_state` is model-generated only on the forecast suffix, while the context prefix is copied from the observed signal for display.
 
 Each ranked plot:
 - shows the full `true_state` signal
 - colors the context prefix separately from the forecast suffix
 - draws a vertical dashed line at the context/forecast boundary
+- shows context reconstruction on the prefix only when `--init-mode encoder`
 
 ## Inference
 
@@ -194,7 +223,7 @@ time,local_time,sequence_0,sequence_1,...
 Rules:
 - the CSV must contain `time`, `local_time`, and one or more `sequence_*` columns
 - use `--sequence-columns` to forecast only a subset, for example `sequence_0,sequence_5`
-- if `--context-fraction` is omitted, the checkpoint’s saved training value is used
+- if `--context-fraction` is omitted, the checkpoint's saved training value is used
 
 Example commands:
 
@@ -218,11 +247,17 @@ Inference CSVs contain:
 - `mean_prediction`
 - `std_prediction`
 
+Inference behavior by init mode:
+- `encoder`: context rows contain model-generated reconstruction values, and forecast rows contain model-generated forecasts
+- `last_state`: context rows keep the observed-prefix copy behavior, and forecast rows contain model-generated forecasts
+- for Neural SDE and Neural LNSDE, stochastic uncertainty is forecast-only, so context rows have `std_prediction = 0.0`
+
 ## Model Behavior
 
 - Neural ODE is deterministic and returns one forecast path per sequence.
 - Neural SDE returns multiple stochastic realizations and an aggregated forecast mean/std on the forecast suffix.
 - Neural LNSDE returns multiple stochastic realizations with multiplicative noise of the form `sigma(t) * z`.
+- With `--init-mode encoder`, all three models also return a deterministic context reconstruction branch derived from the encoder hidden sequence.
 
 ## Notes
 

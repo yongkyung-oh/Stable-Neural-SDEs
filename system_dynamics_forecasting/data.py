@@ -226,6 +226,7 @@ class FullSequenceDataset(Dataset):
             "context_times": torch.as_tensor(row_index[context_slice], dtype=torch.float32),
             "future_times": torch.as_tensor(row_index[future_slice], dtype=torch.float32),
             "context_states": torch.as_tensor(record.normalized_values[context_slice], dtype=torch.float32).unsqueeze(-1),
+            "context_states_raw": torch.as_tensor(record.values[context_slice], dtype=torch.float32).unsqueeze(-1),
             "future_states": torch.as_tensor(record.normalized_values[future_slice], dtype=torch.float32).unsqueeze(-1),
             "future_states_raw": torch.as_tensor(record.values[future_slice], dtype=torch.float32).unsqueeze(-1),
             "sequence_index": torch.as_tensor(sequence_index, dtype=torch.long),

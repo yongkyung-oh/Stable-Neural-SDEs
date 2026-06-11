@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Optional
 
 import torch
 import torch.nn as nn
@@ -20,6 +21,12 @@ class ModelConfig:
     ode_atol: float
     sde_method: str
     sde_dt: float
+
+
+@dataclass
+class ForecastOutputs:
+    forecast_prediction: torch.Tensor
+    context_reconstruction: Optional[torch.Tensor] = None
 
 
 class MLP(nn.Module):
@@ -52,12 +59,14 @@ class PrefixGRUInitializer(nn.Module):
             nn.Linear(hidden_dim, hidden_dim),
         )
 
-    def forward(self, context_times: torch.Tensor, context_states: torch.Tensor) -> torch.Tensor:
+    def forward(self, context_times: torch.Tensor, context_states: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         delta_t = torch.zeros_like(context_times)
         delta_t[:, 1:] = context_times[:, 1:] - context_times[:, :-1]
         features = torch.cat([context_states, delta_t.unsqueeze(-1)], dim=-1)
-        _, hidden = self.encoder(features)
-        return self.projection(hidden[-1])
+        hidden_sequence, _ = self.encoder(features)
+        context_latents = self.projection(hidden_sequence)
+        latent_start = context_latents[:, -1, :]
+        return latent_start, context_latents
 
 
 class LastStateInitializer(nn.Module):
@@ -70,10 +79,11 @@ class LastStateInitializer(nn.Module):
             nn.Linear(hidden_dim, hidden_dim),
         )
 
-    def forward(self, context_times: torch.Tensor, context_states: torch.Tensor) -> torch.Tensor:
+    def forward(self, context_times: torch.Tensor, context_states: torch.Tensor) -> tuple[torch.Tensor, None]:
         last_time = context_times[:, -1].unsqueeze(-1)
         last_state = context_states[:, -1, :]
-        return self.encoder(torch.cat([last_state, last_time], dim=-1))
+        latent_start = self.encoder(torch.cat([last_state, last_time], dim=-1))
+        return latent_start, None
 
 
 class ODEVectorField(nn.Module):
@@ -165,22 +175,29 @@ class ContinuousTimeForecaster(nn.Module):
         context_states: torch.Tensor,
         future_times: torch.Tensor,
         num_samples: int = 1,
-    ) -> torch.Tensor:
+    ) -> ForecastOutputs:
         if context_times.dim() != 2 or future_times.dim() != 2:
             raise ValueError("context_times and future_times must both have shape [batch, length].")
         if context_states.dim() != 3 or context_states.size(-1) != 1:
             raise ValueError("context_states must have shape [batch, context_len, 1].")
 
-        latent_start = self.initializer(context_times, context_states)
+        latent_start, context_latents = self.initializer(context_times, context_states)
         rollout_times = self._build_rollout_times(context_times[0], future_times[0]).to(context_states.device)
+        context_reconstruction = self.decoder(context_latents) if context_latents is not None else None
 
         if self.config.model_kind == "neural_ode":
             latent_paths = self._solve_ode(latent_start, rollout_times)
             decoded = self.decoder(latent_paths)
-            return decoded.unsqueeze(0)
+            return ForecastOutputs(
+                forecast_prediction=decoded.unsqueeze(0),
+                context_reconstruction=context_reconstruction,
+            )
 
         latent_paths = self._solve_sde(latent_start, rollout_times, max(1, num_samples))
-        return self.decoder(latent_paths)
+        return ForecastOutputs(
+            forecast_prediction=self.decoder(latent_paths),
+            context_reconstruction=context_reconstruction,
+        )
 
     def _build_rollout_times(self, context_times: torch.Tensor, future_times: torch.Tensor) -> torch.Tensor:
         start_time = context_times[-1].unsqueeze(0)

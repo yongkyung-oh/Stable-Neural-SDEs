@@ -57,35 +57,43 @@ class SystemDynamicsForecastingTests(unittest.TestCase):
             ]
         )
 
-        for model_kind in ("neural_ode", "neural_sde", "neural_lnsde"):
-            model = build_model(
-                ModelConfig(
-                    model_kind=model_kind,
-                    hidden_dim=8,
-                    num_layers=1,
-                    dropout=0.0,
-                    init_mode="encoder",
-                    ode_method="rk4",
-                    ode_rtol=1e-5,
-                    ode_atol=1e-6,
-                    sde_method="euler",
-                    sde_dt=0.1,
+        for init_mode in ("encoder", "last_state"):
+            for model_kind in ("neural_ode", "neural_sde", "neural_lnsde"):
+                model = build_model(
+                    ModelConfig(
+                        model_kind=model_kind,
+                        hidden_dim=8,
+                        num_layers=1,
+                        dropout=0.0,
+                        init_mode=init_mode,
+                        ode_method="rk4",
+                        ode_rtol=1e-5,
+                        ode_atol=1e-6,
+                        sde_method="euler",
+                        sde_dt=0.1,
+                    )
                 )
-            )
-            samples = 1 if model_kind == "neural_ode" else 3
-            if model_kind != "neural_ode":
-                torch.manual_seed(9)
-            output_a = model(context_times=context_times, context_states=context_states, future_times=future_times, num_samples=samples)
-            self.assertEqual(tuple(output_a.shape[-3:]), (2, 2, 1))
-            if model_kind != "neural_ode":
-                torch.manual_seed(9)
-                output_b = model(
-                    context_times=context_times,
-                    context_states=context_states,
-                    future_times=future_times,
-                    num_samples=samples,
-                )
-                self.assertTrue(torch.allclose(output_a, output_b))
+                samples = 1 if model_kind == "neural_ode" else 3
+                if model_kind != "neural_ode":
+                    torch.manual_seed(9)
+                output_a = model(context_times=context_times, context_states=context_states, future_times=future_times, num_samples=samples)
+                self.assertEqual(tuple(output_a.forecast_prediction.shape[-3:]), (2, 2, 1))
+                if init_mode == "encoder":
+                    self.assertIsNotNone(output_a.context_reconstruction)
+                    self.assertEqual(tuple(output_a.context_reconstruction.shape), (2, 3, 1))
+                else:
+                    self.assertIsNone(output_a.context_reconstruction)
+                if model_kind != "neural_ode":
+                    torch.manual_seed(9)
+                    output_b = model(
+                        context_times=context_times,
+                        context_states=context_states,
+                        future_times=future_times,
+                        num_samples=samples,
+                    )
+                    self.assertTrue(torch.allclose(output_a.forecast_prediction, output_b.forecast_prediction))
+                    if init_mode == "encoder":
+                        self.assertTrue(torch.allclose(output_a.context_reconstruction, output_b.context_reconstruction))
 
     def test_prepare_datasets_and_inference_loading(self) -> None:
         prepared = prepare_datasets(
@@ -157,7 +165,14 @@ class SystemDynamicsForecastingTests(unittest.TestCase):
             device="cpu",
         )
         run_inference(args=infer_args, model_kind="neural_lnsde")
-        self._assert_inference_outputs(infer_dir, sequence_name="sequence_0", expected_context_count=8, expected_forecast_count=8, num_realizations=3)
+        self._assert_inference_outputs(
+            infer_dir,
+            sequence_name="sequence_0",
+            expected_context_count=8,
+            expected_forecast_count=8,
+            num_realizations=3,
+            expect_model_generated_context=True,
+        )
 
         override_dir = self.root / "infer_lnsde_override"
         override_args = Namespace(
@@ -170,7 +185,61 @@ class SystemDynamicsForecastingTests(unittest.TestCase):
             device="cpu",
         )
         run_inference(args=override_args, model_kind="neural_lnsde")
-        self._assert_inference_outputs(override_dir, sequence_name="sequence_0", expected_context_count=4, expected_forecast_count=12, num_realizations=3)
+        self._assert_inference_outputs(
+            override_dir,
+            sequence_name="sequence_0",
+            expected_context_count=4,
+            expected_forecast_count=12,
+            num_realizations=3,
+            expect_model_generated_context=True,
+        )
+
+        last_state_args = Namespace(
+            data_path=str(self.data_path),
+            output_dir=str(output_root),
+            run_name="neural_ode_last_state",
+            context_fraction=0.5,
+            train_ratio=0.5,
+            val_ratio=0.25,
+            test_ratio=0.25,
+            seed=11,
+            batch_size=2,
+            epochs=1,
+            learning_rate=1e-3,
+            weight_decay=1e-5,
+            hidden_dim=8,
+            num_layers=1,
+            dropout=0.0,
+            init_mode="last_state",
+            device="cpu",
+            ode_method="rk4",
+            ode_rtol=1e-5,
+            ode_atol=1e-6,
+            sde_method="euler",
+            sde_dt=0.1,
+            mc_train_samples=1,
+            mc_eval_samples=2,
+        )
+        run_training(args=last_state_args, model_kind="neural_ode")
+        last_state_infer_dir = self.root / "infer_ode_last_state"
+        last_state_infer_args = Namespace(
+            checkpoint_path=str(output_root / "neural_ode_last_state" / "best_checkpoint.pt"),
+            data_path=str(self.data_path),
+            output_dir=str(last_state_infer_dir),
+            sequence_columns="sequence_0",
+            context_fraction=None,
+            num_realizations=1,
+            device="cpu",
+        )
+        run_inference(args=last_state_infer_args, model_kind="neural_ode")
+        self._assert_inference_outputs(
+            last_state_infer_dir,
+            sequence_name="sequence_0",
+            expected_context_count=8,
+            expected_forecast_count=8,
+            num_realizations=1,
+            expect_model_generated_context=False,
+        )
 
     def _assert_ranked_sequence_outputs(self, run_dir: Path, expected_length: int, expected_context_count: int) -> None:
         ranked_csv = sorted((run_dir / "train_best").glob("*.csv"))[0]
@@ -188,6 +257,7 @@ class SystemDynamicsForecastingTests(unittest.TestCase):
 
         context_count = 0
         forecast_count = 0
+        context_prediction_differs = False
         for row in rows:
             self.assertNotEqual(row["predicted_state"], "")
             predicted_state = float(row["predicted_state"])
@@ -196,18 +266,23 @@ class SystemDynamicsForecastingTests(unittest.TestCase):
             is_forecast = row["is_forecast_point"] == "True"
             self.assertNotEqual(is_context, is_forecast)
             if is_context:
-                self.assertAlmostEqual(predicted_state, true_state)
+                if abs(predicted_state - true_state) > 1e-8:
+                    context_prediction_differs = True
             context_count += int(is_context)
             forecast_count += int(is_forecast)
 
         self.assertEqual(context_count, expected_context_count)
         self.assertEqual(forecast_count, expected_length - expected_context_count)
+        self.assertTrue(context_prediction_differs)
 
         ranked_sequence_name = ranked_csv.stem.split("_", 1)[1]
         with (run_dir / "train_sequence_metrics.csv").open("r", encoding="utf-8", newline="") as handle:
             metrics_rows = list(csv.DictReader(handle))
         matching = next(row for row in metrics_rows if row["sequence_name"] == ranked_sequence_name)
         self.assertEqual(int(matching["covered_points"]), forecast_count)
+        self.assertIn("context_rmse", matching)
+        self.assertIn("context_mse", matching)
+        self.assertIn("context_mae", matching)
 
     def _assert_inference_outputs(
         self,
@@ -216,6 +291,7 @@ class SystemDynamicsForecastingTests(unittest.TestCase):
         expected_context_count: int,
         expected_forecast_count: int,
         num_realizations: int,
+        expect_model_generated_context: bool,
     ) -> None:
         csv_path = infer_dir / f"{sequence_name}.csv"
         png_path = infer_dir / f"{sequence_name}.png"
@@ -230,6 +306,11 @@ class SystemDynamicsForecastingTests(unittest.TestCase):
         self.assertEqual(len(context_rows), expected_context_count)
         self.assertEqual(len(forecast_rows), expected_forecast_count * num_realizations)
         self.assertTrue(all(row["realization"] == "-1" for row in context_rows))
+        self.assertTrue(all(float(row["std_prediction"]) == 0.0 for row in context_rows))
+        if expect_model_generated_context:
+            self.assertTrue(any(abs(float(row["prediction"]) - float(row["true_state"])) > 1e-8 for row in context_rows))
+        else:
+            self.assertTrue(all(abs(float(row["prediction"]) - float(row["true_state"])) <= 1e-8 for row in context_rows))
 
     def _write_sample_data(self, path: Path) -> None:
         rows = []
