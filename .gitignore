@@ -178,3 +178,6 @@ CLAUDE.md
 # Upstream comparison baselines
 references/*
 !references/.gitkeep
+
+# Output files
+*outputs
