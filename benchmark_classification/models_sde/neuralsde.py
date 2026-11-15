@@ -1,12 +1,8 @@
-"""Benchmark NSDE runtime with explicit finite-horizon stabilization heuristics.
+"""NSDE vector fields with finite-horizon numerical stabilization.
 
-LSDE, LNSDE, and GSDE runtime paths intentionally keep bounded `sin/cos(t)`
-time features and outer `tanh` clipping on drift/diffusion outputs. These are
-engineering stabilizers for discrete solver robustness on normalized finite
-horizons, not pure theorem-faithful parameterizations. In this runtime
-layer LSDE mainly uses them as practical anti-blow-up controls, LNSDE gives up
-the paper's infinite-horizon asymptotic interpretation, and GSDE trades pure
-geometric positivity structure for a stabilized discrete-time approximation.
+LSDE, LNSDE, and GSDE paths use bounded sin/cos(t) time features and
+outer tanh clipping on drift/diffusion. These bounded vector fields and
+discretized trajectories differ from the continuous-time formulations.
 """
 
 import pathlib
@@ -122,16 +118,10 @@ class NeuralSDE(torch.nn.Module):
         
 class Diffusion_model(torch.nn.Module):
     def __init__(self, input_channels, hidden_channels, hidden_hidden_channels, num_hidden_layers, theta=1.0, sigma=1.0, input_option=0, noise_option=0):
-        """
-        Runtime vector field shared by benchmark LSDE/LNSDE/GSDE variants.
+        """Runtime vector field for LSDE/LNSDE/GSDE with bounded sin/cos(t)
+        time features and outer tanh clipping.
 
-        The benchmark layer deliberately keeps finite-horizon `sin/cos(t)`
-        features and outer `tanh` clipping for solver stability. Those choices
-        are acceptable engineering workarounds here, but they are not the same
-        thing as the paper's pure LSDE/LNSDE/GSDE parameterizations.
-
-        Proposal-method contract preserved across benchmark and `torch_ists`:
-        LSDE=(2, 16), LNSDE=(4, 17), GSDE=(6, 17).
+        Method options: LSDE=(2, 16), LNSDE=(4, 17), GSDE=(6, 17).
         """
         super().__init__()
         self.sde_type = "ito"
