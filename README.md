@@ -7,13 +7,17 @@ Paper (ICLR 2024): https://openreview.net/forum?id=4VIgNuQ1pY · arXiv: https://
 
 ---
 
-## **Code architecture**
-The code for each experiment is meticulously organized into separate folders, aligned with the original references used for implementation. 
+## Overview
 
-- `Benchmark_classification`: PhysioNet Sepsis and Speech Commands, implemented from Kidger, P. et al. (2020) [1] (https://github.com/patrick-kidger/NeuralCDE)
-- `Benchmark_interpolation`: PhysionNet Mortality, implemented from Shukla, S. et al. (2021) [2] (https://github.com/reml-lab/mTAN)
-- `Benchmark_forecasting`: MuJoCo Foresting task, implemented from Jhin, S. et al. (2021) [3] (https://github.com/sheoyon-jhin/ANCDE)
-- `torch_ists`: motivated from Kidger, P., et al. (2020) [1], we develop new python/pytorch wrapper for extensive experiments on robustness to missing data. Please refer the up-to-date version: [torch_ists](https://github.com/yongkyung-oh/torch-ists).
+The paper studies the stability of neural SDE models for irregular time series and proposes Neural LSDE, Neural LNSDE, and Neural GSDE variants. This repository includes classification, interpolation, and forecasting experiments, along with tutorial notebooks illustrating the model formulations.
+
+## **Code architecture**
+The code for each experiment is organized into separate folders, aligned with the original references used for implementation.
+
+- `benchmark_classification`: PhysioNet Sepsis and Speech Commands, implemented from Kidger, P. et al. (2020) [1] (https://github.com/patrick-kidger/NeuralCDE)
+- `benchmark_interpolation`: PhysioNet Mortality, implemented from Shukla, S. et al. (2021) [2] (https://github.com/reml-lab/mTAN)
+- `benchmark_forecasting`: MuJoCo forecasting task, implemented from Jhin, S. et al. (2021) [3] (https://github.com/sheoyon-jhin/ANCDE)
+- [`torch-ists/`](torch-ists/): the bundled Python/PyTorch wrapper for robustness-to-missing-data experiments, motivated by Kidger, P., et al. (2020) [1].
 
 [1] Kidger, P., Morrill, J., Foster, J., & Lyons, T. (2020). Neural controlled differential equations for irregular time series. Advances in Neural Information Processing Systems, 33, 6696-6707.
 
@@ -23,7 +27,7 @@ The code for each experiment is meticulously organized into separate folders, al
 
 --
 
-For example, the `diffusion_model` class in `NSDE/benchmark_classification/models_sde/neuralsde.py` implements the Neural SDEs proposed in the study.
+For example, the `diffusion_model` class in `benchmark_classification/models_sde/neuralsde.py` implements the Neural SDEs proposed in the study.
 
 - `input_option`: This setting is crucial for the diffusion term. It dictates whether to combine the original observation with a controlled path or not. This flexibility allows for experimenting with how the model handles various types of input data, particularly in the context of irregular time series.
 - `noise_option`: It controls the diffusion function in the SDE. Options include constant, additive, multiplicative, among others. The ability to manipulate the diffusion function is key to exploring how different noise models affect the performance and stability of the proposed Neural SDEs.
@@ -50,13 +54,13 @@ Please refer the [tutorial](https://github.com/yongkyung-oh/Stable-Neural-SDEs/t
 | Proposed Neural LNSDE | $dz(t) = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, z(t) \, dW_t$ | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20LNSDE.ipynb) |
 | Proposed Neural GSDE | $\dfrac{dz(t)}{z(t)} = \gamma(t, \tilde{z}(t); \theta_\gamma) \, dt + \sigma(t; \theta_\sigma) \, dW_t$ | [example](https://github.com/yongkyung-oh/Stable-Neural-SDEs/blob/main/tutorial/simple%20OU%20process%20-%20Neural%20GSDE.ipynb) |
 
-**Note**: The code is organized per experiment folder following the original reference implementations. For a cleaner interface, see the [torch-ists](https://github.com/yongkyung-oh/torch-ists) library.
+**Deployment package:** The separately packaged implementation for new applications is available at [nde-for-ts/torch-ists](https://github.com/nde-for-ts/torch-ists).
 
 ---
 
 **Robustness to Missingness Experiment**:
 
-The experimental pipeline for this section has been moved to the independent library `torch-ists`. For reproducibility, use the updated version at the [torch-ists repository](https://github.com/yongkyung-oh/torch-ists).
+The code for these paper experiments is included in [`torch-ists/`](torch-ists/).
 
 ---
 
